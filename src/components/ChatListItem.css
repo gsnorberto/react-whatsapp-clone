@@ -4,8 +4,11 @@
    align-items: center;
    height: 70px;
 }
-.chatListItem:hover{
+.chatListItem:hover {
    background-color: #F5F5F5;
+}
+.chatListItem.active {
+   background-color: #EBEBEB;
 }
 
 .chatListItem--avatar {
@@ -52,7 +55,7 @@
    display: flex;
    width: 100%;
 }
-.chatListItem--lastMsg p{
+.chatListItem--lastMsg p {
    overflow: hidden;
    white-space: nowrap;
    text-overflow: ellipsis;

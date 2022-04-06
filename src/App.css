@@ -35,9 +35,9 @@ header{
    padding: 0 15px;
 }
 
-/* .content-area {
-
-} */
+.content-area {
+   flex: 1;
+}
 
 .header--avatar{
    height: 40px;

@@ -11,12 +11,20 @@ import SearchIcon from '@material-ui/icons/Search';
 
 //components
 import ChatListItem from './components/ChatListItem'
+import ChatIntro from "./components/ChatIntro";
+import ChatWindow from "./components/ChatWindow"
 
 //https://mui.com/pt/components/material-icons/-**//8*          31
 
 export default () => {
 
-   const [chatlist, setChatlist] = useState([{},{},{},{},{},{},{},{},{},{},{},{},{}]);
+   const [chatlist, setChatlist] = useState([
+      {chatId: 1, title: 'Fulano de Tal', avatar: 'https://i.pinimg.com/736x/3e/aa/24/3eaa245d923949b6f662b8ba07b7a3b2.jpg'},
+      {chatId: 2, title: 'Fulano de Tal', avatar: 'https://i.pinimg.com/736x/3e/aa/24/3eaa245d923949b6f662b8ba07b7a3b2.jpg'},
+      {chatId: 3, title: 'Fulano de Tal', avatar: 'https://i.pinimg.com/736x/3e/aa/24/3eaa245d923949b6f662b8ba07b7a3b2.jpg'},
+      {chatId: 4, title: 'Fulano de Tal', avatar: 'https://i.pinimg.com/736x/3e/aa/24/3eaa245d923949b6f662b8ba07b7a3b2.jpg'}
+   ]);
+   const [activeChat, setActiveChat] = useState({});
 
    return (
       <div className="app-window">
@@ -50,6 +58,9 @@ export default () => {
                {chatlist.map((item, key)=>(
                   <ChatListItem 
                      key={key}
+                     data={item}
+                     active={activeChat.chatId === chatlist[key].chatId}
+                     onClick={()=>setActiveChat(chatlist[key])}
                   />
                ))}
             </div>
@@ -57,7 +68,12 @@ export default () => {
 
          {/* CONTENT AREA */}
          <div className="content-area">
-            ...
+            {activeChat.chatId !== undefined &&
+               <ChatWindow />
+            }
+            {activeChat.chatId === undefined &&
+               <ChatIntro />
+            }
          </div>
       </div>
    );
