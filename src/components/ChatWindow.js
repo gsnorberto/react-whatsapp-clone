@@ -16,10 +16,58 @@ import CloseIcon from '@material-ui/icons/Close';
 import SendIcon from '@material-ui/icons/Send';
 import MicIcon from '@material-ui/icons/Mic';
 
-export default () => {
-    const [emojiOpen, setEmojiOpen] = useState(false);
+//components
+import MessageItem from './MessageItem'
 
-    const handleEmojiClick = () => {
+export default ({user}) => {
+    const [emojiOpen, setEmojiOpen] = useState(false);
+    const [text, setText] = useState('');
+    const [listening, setListening] = useState(false);
+    const [list, setList] = useState([
+        {author: 'autor1', body: 'testando a mensagem 1'},
+        {author: 'autor2', body: 'Ok, isso é legal'},
+        {author: 'autor3', body: 'nada'}
+    ]);
+
+    let recognition = null;
+    let SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition
+
+    if( SpeechRecognition !== undefined ) {
+        recognition = new SpeechRecognition();
+    }
+
+    const handleEmojiClick = (e, emojiObject) => {
+        setText(text + emojiObject.emoji)
+    }
+
+    const handleOpenEmoji = () => {
+        setEmojiOpen(true);
+    }
+
+    const handleCloseEmoji = () => {
+        setEmojiOpen(false);
+    }
+
+    const handleMicClick = () => {
+        if(recognition !== null){
+            // Quando começar a gravar com o microfone
+            recognition.onstart = () => {
+                setListening(true);
+            }
+            // Quando parar de gravar
+            recognition.onend = () => {
+                setListening(false);
+            }
+            // Quando receber o resultado
+            recognition.onresult = (e) => {
+                setText( e.results[0][0].transcript );
+            }
+
+            recognition.start();
+        }
+    }
+
+    const handleSendClick = () => {
 
     }
 
@@ -48,12 +96,21 @@ export default () => {
 
             {/* MENSAGENS DO CHAT */}
             <div className="chatWindow--body">
-
+                {list.map((msg, index) =>(
+                    <MessageItem
+                        key={index}
+                        data={msg}
+                        user={user}
+                    />
+                ))}
             </div>
 
             {/* ÁREA DOS EMOJIS */}
-            <div className="chatWindow--emoji-area">
-                <EmojiPicker 
+            <div
+                className="chatWindow--emoji-area"
+                style={{ height: emojiOpen ? '200px' : '0px' }}
+            >
+                <EmojiPicker
                     onEmojiClick={handleEmojiClick}
                 />
             </div>
@@ -61,27 +118,47 @@ export default () => {
             {/* ÁREA DE DIGITAÇÃO DO CHAT */}
             <div className="chatWindows--footer">
                 <div className="chatWindow--pre">
-                    <div className="chatWindow--btn">
+                    {/* Fechar aba de emojis */}
+                    <div
+                        className="chatWindow--btn"
+                        onClick={handleCloseEmoji}
+                        style={{ display: emojiOpen ? 'flex' : 'none' }}
+                    >
                         <CloseIcon style={{ color: '#919191' }} />
                     </div>
 
-                    <div className="chatWindow--btn">
-                        <InsertEmoticonIcon style={{ color: '#919191' }} />
+                    {/* Abrir aba de emojis */}
+                    <div
+                        className="chatWindow--btn"
+                        onClick={handleOpenEmoji}
+                    >
+                        <InsertEmoticonIcon style={{ color: emojiOpen ? '#009688' : '#919191' }} />
                     </div>
                 </div>
-
+                
+                {/* Digitar mensagem */}
                 <div className="chatWindow--inputarea">
                     <input
                         className='chatWindow--input'
                         type="text"
                         placeholder='Digite uma mensagem'
+                        value={text}
+                        onChange={e => setText(e.target.value)}
                     />
                 </div>
-
+                
+                {/* Botões de Enviar e Microfone */}
                 <div className="chatWindow--pos">
-                    <div className="chatWindow--btn">
-                        <SendIcon style={{ color: '#919191' }} />
-                    </div>
+                    {text === '' &&
+                        <div onClick={handleMicClick} className="chatWindow--btn">
+                            <MicIcon style={{ color: listening ? '#126ECE' : '#919191' }} />
+                        </div>
+                    }
+                    {text !== '' &&
+                        <div onClick={handleSendClick} className="chatWindow--btn">
+                            <SendIcon style={{ color: '#919191' }} />
+                        </div>
+                    }
                 </div>
             </div>
         </div>

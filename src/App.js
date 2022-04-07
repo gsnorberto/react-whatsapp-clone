@@ -17,6 +17,12 @@ import ChatWindow from "./components/ChatWindow"
 //https://mui.com/pt/components/material-icons/-**//8*          31
 
 export default () => {
+   const [activeChat, setActiveChat] = useState({});
+   const [user, setUser] = useState({
+      id: 'autor1',
+      avatar: 'https://i.pinimg.com/736x/3e/aa/24/3eaa245d923949b6f662b8ba07b7a3b2.jpg',
+      name: 'Gabriel Norberto'
+   });
 
    const [chatlist, setChatlist] = useState([
       {chatId: 1, title: 'Fulano de Tal', avatar: 'https://i.pinimg.com/736x/3e/aa/24/3eaa245d923949b6f662b8ba07b7a3b2.jpg'},
@@ -24,7 +30,7 @@ export default () => {
       {chatId: 3, title: 'Fulano de Tal', avatar: 'https://i.pinimg.com/736x/3e/aa/24/3eaa245d923949b6f662b8ba07b7a3b2.jpg'},
       {chatId: 4, title: 'Fulano de Tal', avatar: 'https://i.pinimg.com/736x/3e/aa/24/3eaa245d923949b6f662b8ba07b7a3b2.jpg'}
    ]);
-   const [activeChat, setActiveChat] = useState({});
+   
 
    return (
       <div className="app-window">
@@ -32,7 +38,7 @@ export default () => {
          {/* SIDE BAR */}
          <div className="side-bar">
             <header>
-               <img className="header--avatar" src="https://i.pinimg.com/736x/3e/aa/24/3eaa245d923949b6f662b8ba07b7a3b2.jpg" alt="" />
+               <img className="header--avatar" src={user.avatar} alt="" />
 
                <div className="header--buttons">
                   <div className="header--btn">
@@ -69,7 +75,7 @@ export default () => {
          {/* CONTENT AREA */}
          <div className="content-area">
             {activeChat.chatId !== undefined &&
-               <ChatWindow />
+               <ChatWindow user={user}/>
             }
             {activeChat.chatId === undefined &&
                <ChatIntro />
