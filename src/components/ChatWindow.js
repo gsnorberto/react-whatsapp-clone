@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import React from 'react';
 
 //Emojis
@@ -19,20 +19,78 @@ import MicIcon from '@material-ui/icons/Mic';
 //components
 import MessageItem from './MessageItem'
 
-export default ({user}) => {
+export default ({ user }) => {
+    const body = useRef();
+
     const [emojiOpen, setEmojiOpen] = useState(false);
     const [text, setText] = useState('');
     const [listening, setListening] = useState(false);
     const [list, setList] = useState([
-        {author: 'autor1', body: 'testando a mensagem 1'},
-        {author: 'autor2', body: 'Ok, isso é legal'},
-        {author: 'autor3', body: 'nada'}
+        { author: 'autor1', body: 'testando a mensagem 1' },
+        { author: 'autor2', body: 'Ok, isso é legal' },
+        { author: 'autor2', body: 'nada' },
+        { author: 'autor1', body: 'testando a mensagem 1' },
+        { author: 'autor2', body: 'Ok, isso é legal' },
+        { author: 'autor2', body: 'nada' },
+        { author: 'autor1', body: 'testando a mensagem 1' },
+        { author: 'autor2', body: 'Ok, isso é legal' },
+        { author: 'autor2', body: 'nada' },
+        { author: 'autor1', body: 'testando a mensagem 1' },
+        { author: 'autor2', body: 'Ok, isso é legal' },
+        { author: 'autor2', body: 'nada' },
+        { author: 'autor1', body: 'testando a mensagem 1' },
+        { author: 'autor2', body: 'Ok, isso é legal' },
+        { author: 'autor2', body: 'nada' },
+        { author: 'autor1', body: 'testando a mensagem 1' },
+        { author: 'autor2', body: 'Ok, isso é legal' },
+        { author: 'autor2', body: 'nada' },
+        { author: 'autor1', body: 'testando a mensagem 1' },
+        { author: 'autor2', body: 'Ok, isso é legal' },
+        { author: 'autor2', body: 'nada' },
+        { author: 'autor1', body: 'testando a mensagem 1' },
+        { author: 'autor2', body: 'Ok, isso é legal' },
+        { author: 'autor2', body: 'nada' },
+        { author: 'autor1', body: 'testando a mensagem 1' },
+        { author: 'autor2', body: 'Ok, isso é legal' },
+        { author: 'autor2', body: 'nada' },
+        { author: 'autor1', body: 'testando a mensagem 1' },
+        { author: 'autor2', body: 'Ok, isso é legal' },
+        { author: 'autor2', body: 'nada' },
+        { author: 'autor1', body: 'testando a mensagem 1' },
+        { author: 'autor2', body: 'Ok, isso é legal' },
+        { author: 'autor2', body: 'nada' },
+        { author: 'autor1', body: 'testando a mensagem 1' },
+        { author: 'autor2', body: 'Ok, isso é legal' },
+        { author: 'autor2', body: 'nada' },
+        { author: 'autor1', body: 'testando a mensagem 1' },
+        { author: 'autor2', body: 'Ok, isso é legal' },
+        { author: 'autor2', body: 'nada' },
+        { author: 'autor1', body: 'testando a mensagem 1' },
+        { author: 'autor2', body: 'Ok, isso é legal' },
+        { author: 'autor2', body: 'nada' },
+        { author: 'autor1', body: 'testando a mensagem 1' },
+        { author: 'autor2', body: 'Ok, isso é legal' },
+        { author: 'autor2', body: 'nada' },
+        { author: 'autor1', body: 'testando a mensagem 1' },
+        { author: 'autor2', body: 'Ok, isso é legal' },
+        { author: 'autor2', body: 'nada' },
+        { author: 'autor1', body: 'testando a mensagem 1' },
+        { author: 'autor2', body: 'Ok, isso é legal' },
+        { author: 'autor2', body: 'nada' },
     ]);
+
+    //Exibir conteúdo da parte final da barra de rolagem dentro do chat de mensagens
+    useEffect(() => {
+        //Se a altura total do body (contando todo scroll) for maior que a altura de visualização da mensagem no display
+        if(body.current.scrollHeight > body.current.offsetHeight){
+            body.current.scrollTop = body.current.scrollHeight - body.current.offsetHeight
+        }
+    }, []);
 
     let recognition = null;
     let SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition
 
-    if( SpeechRecognition !== undefined ) {
+    if (SpeechRecognition !== undefined) {
         recognition = new SpeechRecognition();
     }
 
@@ -49,7 +107,7 @@ export default ({user}) => {
     }
 
     const handleMicClick = () => {
-        if(recognition !== null){
+        if (recognition !== null) {
             // Quando começar a gravar com o microfone
             recognition.onstart = () => {
                 setListening(true);
@@ -60,7 +118,7 @@ export default ({user}) => {
             }
             // Quando receber o resultado
             recognition.onresult = (e) => {
-                setText( e.results[0][0].transcript );
+                setText(e.results[0][0].transcript);
             }
 
             recognition.start();
@@ -95,8 +153,8 @@ export default ({user}) => {
             </div>
 
             {/* MENSAGENS DO CHAT */}
-            <div className="chatWindow--body">
-                {list.map((msg, index) =>(
+            <div ref={body} className="chatWindow--body">
+                {list.map((msg, index) => (
                     <MessageItem
                         key={index}
                         data={msg}
@@ -135,7 +193,7 @@ export default ({user}) => {
                         <InsertEmoticonIcon style={{ color: emojiOpen ? '#009688' : '#919191' }} />
                     </div>
                 </div>
-                
+
                 {/* Digitar mensagem */}
                 <div className="chatWindow--inputarea">
                     <input
@@ -146,7 +204,7 @@ export default ({user}) => {
                         onChange={e => setText(e.target.value)}
                     />
                 </div>
-                
+
                 {/* Botões de Enviar e Microfone */}
                 <div className="chatWindow--pos">
                     {text === '' &&
