@@ -2,11 +2,12 @@ import React from "react";
 import './Login.css'
 import Api from "../Api";
 
-export default () => {
+export default ({onReceive}) => {
     const handleFacebookLogin = async () => {
         let result = await Api.fbPopup();
-        if(result){
 
+        if(result){
+            onReceive(result.user)
         } else {
             alert("Algo deu errado!" );
         }

@@ -1,6 +1,6 @@
-import firebase from 'firebase/app';
-import 'firebase/firebase-auth';
-import 'firebase/firebase-firestore';
+import firebase from 'firebase/compat/app';
+import 'firebase/compat/auth';
+import 'firebase/compat/firestore';
 
 import firebaseConfig from './firebaseConfig';
 
@@ -11,7 +11,7 @@ export default {
     //Função de Login com a conta do Facebook
     fbPopup:async () => {
         const provider = new firebase.auth.FacebookAuthProvider();
-        let result = await firebaseApp.auth().signInWitchPopup(provider);
+        let result = await firebaseApp.auth().signInWithPopup(provider);
         return result;
     }
 }

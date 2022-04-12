@@ -14,6 +14,7 @@ import ChatListItem from './components/ChatListItem'
 import ChatIntro from "./components/ChatIntro";
 import ChatWindow from "./components/ChatWindow"
 import NewChat from "./components/NewChat";
+import Login from "./components/Login";
 
 //https://mui.com/pt/components/material-icons/-**//8*          31
 
@@ -21,11 +22,7 @@ export default () => {
     const [activeChat, setActiveChat] = useState({});
     const [showNewChat, setShowNewChat] = useState(false);
 
-    const [user, setUser] = useState({
-        id: 'autor1',
-        avatar: 'https://i.pinimg.com/736x/3e/aa/24/3eaa245d923949b6f662b8ba07b7a3b2.jpg',
-        name: 'Gabriel Norberto'
-    });
+    const [user, setUser] = useState(null);
 
     const [chatlist, setChatlist] = useState([
         { chatId: 1, title: 'Fulano de Tal', avatar: 'https://i.pinimg.com/736x/3e/aa/24/3eaa245d923949b6f662b8ba07b7a3b2.jpg' },
@@ -36,6 +33,19 @@ export default () => {
 
     const handleNewChat = () => {
         setShowNewChat(true);
+    }
+
+    const handleLoginData = async (u) => {
+        let newUser = {
+            id: u.uid,
+            name: u.displayName,
+            avatar: u.photoURL
+        };
+        setUser(newUser);
+    }
+
+    if(user === null){
+        return(<Login onReceive={handleLoginData}/>)
     }
 
     return (
