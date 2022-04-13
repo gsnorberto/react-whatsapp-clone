@@ -16,20 +16,22 @@ import ChatWindow from "./components/ChatWindow"
 import NewChat from "./components/NewChat";
 import Login from "./components/Login";
 
+//Api
+import Api from "./Api";
+
 //https://mui.com/pt/components/material-icons/-**//8*          31
 
 export default () => {
     const [activeChat, setActiveChat] = useState({});
     const [showNewChat, setShowNewChat] = useState(false);
 
-    const [user, setUser] = useState(null);
+    const [user, setUser] = useState({
+        id: '3aqmvzmt42cWUg8McfeWUXU5N5k1',
+        name: 'Gabriel Norbertto',
+        avatar: 'https://graph.facebook.com/4486931294741430/picture'
+    });
 
-    const [chatlist, setChatlist] = useState([
-        { chatId: 1, title: 'Fulano de Tal', avatar: 'https://i.pinimg.com/736x/3e/aa/24/3eaa245d923949b6f662b8ba07b7a3b2.jpg' },
-        { chatId: 2, title: 'Fulano de Tal 2', avatar: 'https://i.pinimg.com/736x/3e/aa/24/3eaa245d923949b6f662b8ba07b7a3b2.jpg' },
-        { chatId: 3, title: 'Fulano de Tal 3', avatar: 'https://i.pinimg.com/736x/3e/aa/24/3eaa245d923949b6f662b8ba07b7a3b2.jpg' },
-        { chatId: 4, title: 'Fulano de Tal 4', avatar: 'https://i.pinimg.com/736x/3e/aa/24/3eaa245d923949b6f662b8ba07b7a3b2.jpg' }
-    ]);
+    const [chatlist, setChatlist] = useState([ ]);
 
     const handleNewChat = () => {
         setShowNewChat(true);
@@ -41,6 +43,9 @@ export default () => {
             name: u.displayName,
             avatar: u.photoURL
         };
+
+        await Api.addUser(newUser);
+
         setUser(newUser);
     }
 
