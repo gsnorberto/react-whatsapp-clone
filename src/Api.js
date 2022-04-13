@@ -52,7 +52,7 @@ export default {
 
         // Usuário 1
         db.collection('users').doc(user.id).update({
-            chats: firebase.firestore.FieldValue.awwayUnion({ //adiciona o item em um array já existente
+            chats: firebase.firestore.FieldValue.arrayUnion({ //adiciona o item em um array já existente
                 chatId: newChat.id,
                 title: user2.name,
                 image: user2.avatar,
@@ -62,7 +62,7 @@ export default {
 
         // Usuário 2
         db.collection('users').doc(user2.id).update({
-            chats: firebase.firestore.FieldValue.awwayUnion({ //adiciona o item em um array já existente
+            chats: firebase.firestore.FieldValue.arrayUnion({ //adiciona o item em um array já existente
                 chatId: newChat.id,
                 title: user.name,
                 image: user.avatar,
