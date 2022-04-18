@@ -4,7 +4,7 @@ import './ChatListItem.css';
 export default ({data, onClick, active}) => {
    return(
       <div onClick={onClick} className={`chatListItem ${active?'active':''}`}>
-         <img className="chatListItem--avatar" src={data.avatar} alt="" />
+         <img className="chatListItem--avatar" src={data.image} alt="" />
 
          <div className="chatListItem--lines">
             <div className="chatListItem--line">

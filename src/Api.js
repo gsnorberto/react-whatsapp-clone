@@ -9,29 +9,29 @@ const db = firebase.firestore();
 
 export default {
     // Função de Login com a conta do Facebook
-    fbPopup:async () => {
+    fbPopup: async () => {
         const provider = new firebase.auth.FacebookAuthProvider();
         let result = await firebaseApp.auth().signInWithPopup(provider);
         return result;
     },
 
     // Adiciona os dados do usuário no BD quando ele loga com Facebook.
-    addUser:async(u) => {
+    addUser: async (u) => {
         await db.collection('users').doc(u.id).set({
             name: u.name,
             avatar: u.avatar
-        }, {merge: true}); // Se o "id" do usuário já estiver cadastrado no BD, faz a alteração. Caso contrário, cria um novo usuário. 
+        }, { merge: true }); // Se o "id" do usuário já estiver cadastrado no BD, faz a alteração. Caso contrário, cria um novo usuário. 
     },
 
     // Obtem a lista de contatos do usuário
-    getContactList:async(userId) => {
+    getContactList: async (userId) => {
         let list = [];
         let results = await db.collection('users').get(); //Lista de usuários
 
         results.forEach(result => {
             let data = result.data();
 
-            if( result.id !== userId ){
+            if (result.id !== userId) {
                 list.push({
                     id: result.id,
                     name: data.name,
@@ -44,7 +44,7 @@ export default {
     },
 
     // Inicia nova conversa
-    addNewChat:async (user, user2) => {
+    addNewChat: async (user, user2) => {
         let newChat = await db.collection('chats').add({
             messages: [],
             users: [user.id, user2.id]
@@ -69,5 +69,19 @@ export default {
                 with: user.id
             })
         });
+    },
+
+    //Monitorar lista de chats (tempo real)
+    onChatList: (userId, setChatList) => {
+
+        return db.collection('users').doc(userId).onSnapshot((doc) => {
+            if (doc.exists) {
+                let data = doc.data();
+
+                if (data.chats) {
+                    setChatList(data.chats);
+                }
+            }
+        })
     }
 }

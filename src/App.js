@@ -28,10 +28,17 @@ export default () => {
     const [user, setUser] = useState({
         id: '3aqmvzmt42cWUg8McfeWUXU5N5k1',
         name: 'Gabriel Norbertto',
-        avatar: 'https://graph.facebook.com/4486931294741430/picture'
+        avatar: 'https://cdn-icons-png.flaticon.com/512/53/53068.png'
     });
 
-    const [chatlist, setChatlist] = useState([ ]);
+    const [chatList, setChatList] = useState([ ]);
+
+    useEffect(() => {
+        if(user !== null){
+            let unsub = Api.onChatList(user.id, setChatList);
+            return unsub;
+        }
+    }, []);
 
     const handleNewChat = () => {
         setShowNewChat(true);
@@ -59,7 +66,7 @@ export default () => {
             {/* SIDE BAR */}
             <div className="side-bar">
                 <NewChat
-                    chatlist={chatlist}
+                    chatlist={chatList}
                     user={user}
                     show={showNewChat}
                     setShow={setShowNewChat}
@@ -89,12 +96,12 @@ export default () => {
                 </div>
 
                 <div className="chat-list">
-                    {chatlist.map((item, key) => (
+                    {chatList.map((item, key) => (
                         <ChatListItem
                             key={key}
                             data={item}
-                            active={activeChat.chatId === chatlist[key].chatId}
-                            onClick={() => setActiveChat(chatlist[key])}
+                            active={activeChat.chatId === chatList[key].chatId}
+                            onClick={() => setActiveChat(chatList[key])}
                         />
                     ))}
                 </div>
