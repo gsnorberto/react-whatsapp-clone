@@ -45,7 +45,7 @@ export default () => {
     }
 
     const handleLoginData = async (u) => {
-        let newUser = {
+        let newUser = { // Dados vindos do Facebook
             id: u.uid,
             name: u.displayName,
             avatar: u.photoURL
@@ -110,7 +110,7 @@ export default () => {
             {/* CONTENT AREA */}
             <div className="content-area">
                 {activeChat.chatId !== undefined &&
-                    <ChatWindow user={user} />
+                    <ChatWindow user={user} data={activeChat}/>
                 }
                 {activeChat.chatId === undefined &&
                     <ChatIntro />

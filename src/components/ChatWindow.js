@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import React from 'react';
+import Api from '../Api'
 
 //Emojis
 import EmojiPicker from 'emoji-picker-react';
@@ -19,65 +20,14 @@ import MicIcon from '@material-ui/icons/Mic';
 //components
 import MessageItem from './MessageItem'
 
-export default ({ user }) => {
+export default ({ user, data }) => {
     const body = useRef();
 
     const [emojiOpen, setEmojiOpen] = useState(false);
     const [text, setText] = useState('');
     const [listening, setListening] = useState(false);
-    const [list, setList] = useState([
-        { author: 'autor1', body: 'testando a mensagem 1' },
-        { author: 'autor2', body: 'Ok, isso é legal' },
-        { author: 'autor2', body: 'nada' },
-        { author: 'autor1', body: 'testando a mensagem 1' },
-        { author: 'autor2', body: 'Ok, isso é legal' },
-        { author: 'autor2', body: 'nada' },
-        { author: 'autor1', body: 'testando a mensagem 1' },
-        { author: 'autor2', body: 'Ok, isso é legal' },
-        { author: 'autor2', body: 'nada' },
-        { author: 'autor1', body: 'testando a mensagem 1' },
-        { author: 'autor2', body: 'Ok, isso é legal' },
-        { author: 'autor2', body: 'nada' },
-        { author: 'autor1', body: 'testando a mensagem 1' },
-        { author: 'autor2', body: 'Ok, isso é legal' },
-        { author: 'autor2', body: 'nada' },
-        { author: 'autor1', body: 'testando a mensagem 1' },
-        { author: 'autor2', body: 'Ok, isso é legal' },
-        { author: 'autor2', body: 'nada' },
-        { author: 'autor1', body: 'testando a mensagem 1' },
-        { author: 'autor2', body: 'Ok, isso é legal' },
-        { author: 'autor2', body: 'nada' },
-        { author: 'autor1', body: 'testando a mensagem 1' },
-        { author: 'autor2', body: 'Ok, isso é legal' },
-        { author: 'autor2', body: 'nada' },
-        { author: 'autor1', body: 'testando a mensagem 1' },
-        { author: 'autor2', body: 'Ok, isso é legal' },
-        { author: 'autor2', body: 'nada' },
-        { author: 'autor1', body: 'testando a mensagem 1' },
-        { author: 'autor2', body: 'Ok, isso é legal' },
-        { author: 'autor2', body: 'nada' },
-        { author: 'autor1', body: 'testando a mensagem 1' },
-        { author: 'autor2', body: 'Ok, isso é legal' },
-        { author: 'autor2', body: 'nada' },
-        { author: 'autor1', body: 'testando a mensagem 1' },
-        { author: 'autor2', body: 'Ok, isso é legal' },
-        { author: 'autor2', body: 'nada' },
-        { author: 'autor1', body: 'testando a mensagem 1' },
-        { author: 'autor2', body: 'Ok, isso é legal' },
-        { author: 'autor2', body: 'nada' },
-        { author: 'autor1', body: 'testando a mensagem 1' },
-        { author: 'autor2', body: 'Ok, isso é legal' },
-        { author: 'autor2', body: 'nada' },
-        { author: 'autor1', body: 'testando a mensagem 1' },
-        { author: 'autor2', body: 'Ok, isso é legal' },
-        { author: 'autor2', body: 'nada' },
-        { author: 'autor1', body: 'testando a mensagem 1' },
-        { author: 'autor2', body: 'Ok, isso é legal' },
-        { author: 'autor2', body: 'nada' },
-        { author: 'autor1', body: 'testando a mensagem 1' },
-        { author: 'autor2', body: 'Ok, isso é legal' },
-        { author: 'autor2', body: 'nada' },
-    ]);
+    const [list, setList] = useState([]);
+    const [users, setUsers] = useState([]);
 
     //Exibir conteúdo da parte final da barra de rolagem dentro do chat de mensagens
     useEffect(() => {
@@ -86,6 +36,13 @@ export default ({ user }) => {
             body.current.scrollTop = body.current.scrollHeight - body.current.offsetHeight
         }
     }, []);
+
+    useEffect(() => {
+        setList([]);
+        let unsub = Api.onChatContent(data.chatId, setList, setUsers)
+
+        return unsub;
+    }, [data.chatId]);
 
     let recognition = null;
     let SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition
@@ -125,8 +82,19 @@ export default ({ user }) => {
         }
     }
 
-    const handleSendClick = () => {
+    const handleInputKeyUp = (e) => {
+        if(e.keyCode === 13){ //Clicou "enter"
+            handleSendClick();
+        }
+    }
 
+    //Enviar mensagem
+    const handleSendClick = () => {
+        if(text !== ''){
+            Api.sendMessage(data, user.id, 'text', text, users);
+            setText('');
+            setEmojiOpen(false);
+        }
     }
 
     return (
@@ -134,8 +102,8 @@ export default ({ user }) => {
             {/* INFORMAÇÕES DO CHAT DO CONTATO */}
             <div className="chatWindow--header">
                 <div className="chatWindow--header-info">
-                    <img className='chatWindow--avatar' src="https://i.pinimg.com/736x/3e/aa/24/3eaa245d923949b6f662b8ba07b7a3b2.jpg" alt="" />
-                    <div className="chatWindow--name">Gabriel Norberto</div>
+                    <img className='chatWindow--avatar' src={data.image} alt="" />
+                    <div className="chatWindow--name">{data.title}</div>
                 </div>
 
                 <div className="chatWindow--header-buttons">
@@ -202,6 +170,7 @@ export default ({ user }) => {
                         placeholder='Digite uma mensagem'
                         value={text}
                         onChange={e => setText(e.target.value)}
+                        onKeyUp={handleInputKeyUp}
                     />
                 </div>
 
